@@ -1,0 +1,52 @@
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: radial-gradient(circle, #1a1a1a 0%, #0d0d0d 100%);
+    color: white;
+    display: flex;
+    justify-content: center;
+    padding: 40px 0;
+    margin: 0;
+}
+
+.main-wrapper { display: flex; flex-direction: column; align-items: center; gap: 20px; }
+
+.tab-system { display: flex; gap: 5px; }
+.tab-btn {
+    background: #222; border: none; color: #888; padding: 12px 25px;
+    cursor: pointer; border-radius: 10px 10px 0 0; font-weight: bold; transition: 0.3s;
+}
+.tab-btn.active { background: #1e1e1e; color: #ff9500; border-bottom: 2px solid #ff9500; }
+
+.calculator-card, .history-card {
+    background: #1e1e1e; padding: 25px; border-radius: 20px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5); width: 360px; border: 1px solid #333;
+}
+.app-section { display: none; }
+.app-section.active { display: block; }
+
+input[type="text"] {
+    width: 100%; box-sizing: border-box; background: #121212; border: 2px solid #333;
+    color: #ff9500; padding: 15px; font-family: 'Roboto Mono'; font-size: 1.5rem;
+    border-radius: 10px; margin-bottom: 15px; text-align: right;
+}
+
+.operators { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+button {
+    padding: 18px; border: none; border-radius: 12px; background: #333;
+    color: white; font-weight: bold; cursor: pointer; transition: 0.2s;
+}
+button:hover { background: #444; }
+.btn-op { background: #444; color: #ff9500; }
+.btn-mem, .btn-sci { background: #222; color: #ff9500; font-size: 0.9rem; }
+.btn-equal { background: #ff9500; color: black; }
+.btn-clear { width: 100%; background: #ff9500; color: black; margin-top: 10px; }
+
+.result {
+    margin-top: 15px; padding: 15px; background: #121212; border-radius: 10px;
+    font-weight: bold; border: 1px dashed #444; text-align: center;
+}
+.result.success-state { color: #4ade80; border-color: #4ade80; }
+.result.error-state { color: #f87171; border-color: #f87171; }
+
+#historyList { list-style: none; padding: 0; max-height: 200px; overflow-y: auto; color: #bbb; }
+.btn-history { width: 100%; background: #333; margin-top: 10px; }
