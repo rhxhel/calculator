@@ -1,0 +1,153 @@
+/* --- Body & Layout --- */
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.calculator-container {
+    display: flex;
+    gap: 20px; /* space between calculator and history */
+}
+
+/* --- Calculator Card --- */
+.calculator-card {
+    background: #ffffff;
+    padding: 2rem;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+    width: 350px;
+    height: 500px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- History Card --- */
+.history-card {
+    background: #ffffff;
+    padding: 2rem;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+    width: 250px;
+    height: 500px;
+    display: flex;
+    flex-direction: column;
+}
+
+.history-card h4 {
+    margin-bottom: 10px;
+}
+
+/* --- Input Field --- */
+input[type="text"] {
+    font-family: 'Roboto Mono', monospace; /* Input field font */
+    font-size: 1rem;
+    width: 325px;
+    padding: 10px;
+    border: 2px solid #f1f2f6;
+    border-radius: 8px;
+    outline: none;
+    margin-bottom: 1rem;
+}
+
+/* --- Paradigm Selector --- */
+.paradigm-selector {
+    margin-bottom: 1rem;
+    font-size: 1rem;
+}
+
+/* --- Operators --- */
+.operators {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+button {
+    padding: 12px;
+    border: none;
+    background-color: #f1f2f6;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+button:hover {
+    background-color: #764ba2;
+    color: white;
+}
+
+/* --- Utility Buttons --- */
+.utility-buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 1rem;
+}
+
+.btn-clear { 
+    flex: 2; 
+    background-color: #ffa502;
+    color: white; 
+}
+
+.btn-copy { 
+    flex: 1; 
+    background-color: #ff4757; 
+    color: white; 
+}
+
+.btn-delete {
+    flex: 1;
+    background-color: #ffa502; 
+    color: white;
+}
+
+/* --- Result Display --- */
+.result {
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    border: 1px dashed #ccc;
+}
+
+/* --- History Section --- */
+.history-section {
+    text-align: left;
+    border-top: 1px solid #eee;
+    padding-top: 10px;
+}
+
+/* --- History List --- */
+#historyList {
+    list-style: none;
+    padding: 10px;
+    flex: 1;
+    overflow-y: auto;
+    font-size: 1rem;
+    color: #666;
+    font-family: 'Roboto Mono', monospace;
+
+    /* Background for history */
+    background: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%);
+    border-radius: 12px;
+    border: 1px solid #ccc;
+}
+
+/* --- History Button --- */
+.btn-history {
+    margin-top: 10px;
+    background-color: #2f3542; 
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
