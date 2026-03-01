@@ -2,96 +2,92 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced Paradigm Suite</title>
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <title>Paradigm Calculator & Converter</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="main-wrapper">
-        <div class="tab-system">
-            <button id="calcTab" class="tab-btn active" onclick="switchTab('calc-section')">Calculator</button>
-            <button id="convTab" class="tab-btn" onclick="switchTab('conv-section')">Converter</button>
+    <div class="main-wrapper" id="app-wrapper">
+        <div class="tab-navigation">
+            <button class="tab-btn active" onclick="switchTab('calc-tab')">Calculator</button>
+            <button class="tab-btn" onclick="switchTab('convert-tab')">Converter</button>
         </div>
 
-        <div id="calc-section" class="app-section active">
+        <div class="calculator-container">
             <div class="calculator-card">
-                <div class="paradigm-selector">
-                    <select id="paradigmChoice" class="styled-select">
-                        <option value="procedural">Procedural Mode</option>
-                        <option value="oop">Object-Oriented Mode</option>
-                        <option value="functional">Functional Mode</option>
-                    </select>
+                <div id="calc-tab" class="tab-content active">
+                    <h2>Paradigm Calculator</h2>
+                    <div class="paradigm-selector">
+                        <select id="paradigmChoice" class="styled-select">
+                            <option value="procedural">Procedural</option>
+                            <option value="oop">Object-Oriented</option>
+                            <option value="functional">Functional</option>
+                        </select>
+                    </div>
+                    <div class="inputs">
+                        <input type="text" id="expressionInput" placeholder="Enter expression">
+                    </div>
                 </div>
-                <input type="text" id="expressionInput" placeholder="0" readonly>
-                <div class="operators">
-                    <button class="btn-mem" onclick="memoryAction('M+')">M+</button>
-                    <button class="btn-mem" onclick="memoryAction('MR')">MR</button>
-                    <button class="btn-sci" onclick="appendValue('sqrt')">√</button>
-                    <button class="btn-sci" onclick="appendValue('**')">^</button>
-                    
+
+                <div id="convert-tab" class="tab-content">
+                    <h2>Unit Converter</h2>
+                    <div class="converter-group">
+                        <select id="convertType" class="styled-select" onchange="runConversion()">
+                            <option value="length">Length (m to ft)</option>
+                            <option value="temp">Temp (°C to °F)</option>
+                            <option value="weight">Weight (kg to lb)</option>
+                        </select>
+                    </div>
+                    <div class="inputs">
+                        <input type="text" id="convertInput" placeholder="0" readonly>
+                    </div>
+                </div>
+
+                <div class="operators" id="numpad">
+                    <button onclick="memoryClear()" class="btn-mem calc-only">MC</button>
+                    <button onclick="memoryRecall()" class="btn-mem calc-only">MR</button>
+                    <button onclick="memoryAdd()" class="btn-mem calc-only">M+</button>
+                    <button onclick="memorySubtract()" class="btn-mem calc-only">M-</button>
+
                     <button onclick="appendValue('7')">7</button>
                     <button onclick="appendValue('8')">8</button>
                     <button onclick="appendValue('9')">9</button>
-                    <button class="btn-op" onclick="appendValue('/')">÷</button>
+                    <button onclick="appendValue('/')" class="calc-only">÷</button>
 
                     <button onclick="appendValue('4')">4</button>
                     <button onclick="appendValue('5')">5</button>
                     <button onclick="appendValue('6')">6</button>
-                    <button class="btn-op" onclick="appendValue('*')">×</button>
+                    <button onclick="appendValue('*')" class="calc-only">×</button>
 
                     <button onclick="appendValue('1')">1</button>
                     <button onclick="appendValue('2')">2</button>
                     <button onclick="appendValue('3')">3</button>
-                    <button class="btn-op" onclick="appendValue('-')">−</button>
+                    <button onclick="appendValue('-')" class="calc-only">−</button>
 
                     <button onclick="appendValue('0')">0</button>
                     <button onclick="appendValue('.')">.</button>
+                    <button onclick="appendValue('%')" class="calc-only">%</button>
+                    <button onclick="appendValue('+')" class="calc-only">+</button>
+
+                    <button onclick="appendValue('(')" class="calc-only">(</button>
+                    <button onclick="appendValue(')')" class="calc-only">)</button>
                     <button onclick="deleteLast()" class="btn-delete">DEL</button>
-                    <button class="btn-op" onclick="appendValue('+')">+</button>
+                    <button onclick="copyResult()" class="calc-only">ANS</button>
                 </div>
+
                 <div class="utility-buttons">
-                    <button onclick="clearCalculator()" class="btn-clear">AC</button>
-                    <button onclick="handleAction()" class="btn-equal">=</button>
+                    <button onclick="clearUI()" class="btn-clear">AC</button>
+                    <button onclick="handleMainAction()" class="btn-equal">=</button>
                 </div>
+
                 <div id="resultDisplay" class="result">Result: --</div>
             </div>
-        </div>
 
-        <div id="conv-section" class="app-section">
-            <div class="calculator-card">
-                <h2 style="margin-top:0">Unit Converter</h2>
-                <input type="text" id="convertInput" placeholder="0" readonly>
-                <select id="convertType" class="styled-select" style="width:100%; margin-bottom:15px;">
-                    <option value="km_m">Kilometers to Meters</option>
-                    <option value="m_ft">Meters to Feet</option>
-                    <option value="kg_lb">Kilograms to Pounds</option>
-                    <option value="c_f">Celsius to Fahrenheit</option>
-                </select>
-                
-                <div class="operators">
-                    <button onclick="appendConv('7')">7</button>
-                    <button onclick="appendConv('8')">8</button>
-                    <button onclick="appendConv('9')">9</button>
-                    <button onclick="appendConv('4')">4</button>
-                    <button onclick="appendConv('5')">5</button>
-                    <button onclick="appendConv('6')">6</button>
-                    <button onclick="appendConv('1')">1</button>
-                    <button onclick="appendConv('2')">2</button>
-                    <button onclick="appendConv('3')">3</button>
-                    <button onclick="clearConv()" class="btn-delete">C</button>
-                    <button onclick="appendConv('0')">0</button>
-                    <button onclick="runConversion()" class="btn-equal">CONVERT</button>
-                </div>
-                <div id="converterResult" class="result">Result: --</div>
+            <div class="history-card">
+                <h2>History</h2>
+                <ul id="historyList"></ul>
+                <button onclick="clearHistory()" class="btn-history">Clear</button>
             </div>
-        </div>
-
-        <div class="history-card">
-            <h3>History</h3>
-            <ul id="historyList"></ul>
-            <button onclick="clearHistory()" class="btn-history">Clear History</button>
         </div>
     </div>
     <script src="script.js"></script>
