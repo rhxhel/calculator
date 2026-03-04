@@ -9,8 +9,8 @@
 <body>
     <div class="main-wrapper" id="app-wrapper">
         <div class="tab-navigation">
-            <button class="tab-btn active" onclick="switchTab('calc-tab')">Calculator</button>
-            <button class="tab-btn" onclick="switchTab('convert-tab')">Converter</button>
+            <button class="tab-btn active" id="calc-tab-btn">Calculator</button>
+            <button class="tab-btn" id="convert-tab-btn">Converter</button>
         </div>
 
         <div class="calculator-container">
@@ -32,7 +32,7 @@
                 <div id="convert-tab" class="tab-content">
                     <h2>Unit Converter</h2>
                     <div class="converter-group">
-                        <select id="convertType" class="styled-select" onchange="runConversion()">
+                        <select id="convertType" class="styled-select">
                             <option value="length">Length (m to ft)</option>
                             <option value="temp">Temp (°C to °F)</option>
                             <option value="weight">Weight (kg to lb)</option>
@@ -44,40 +44,35 @@
                 </div>
 
                 <div class="operators" id="numpad">
-                    <button onclick="memoryClear()" class="btn-mem calc-only">MC</button>
-                    <button onclick="memoryRecall()" class="btn-mem calc-only">MR</button>
-                    <button onclick="memoryAdd()" class="btn-mem calc-only">M+</button>
-                    <button onclick="memorySubtract()" class="btn-mem calc-only">M-</button>
+                    <button class="num-btn">7</button>
+                    <button class="num-btn">8</button>
+                    <button class="num-btn">9</button>
+                    <button class="op-btn calc-only">÷</button>
 
-                    <button onclick="appendValue('7')">7</button>
-                    <button onclick="appendValue('8')">8</button>
-                    <button onclick="appendValue('9')">9</button>
-                    <button onclick="appendValue('/')" class="calc-only">÷</button>
+                    <button class="num-btn">4</button>
+                    <button class="num-btn">5</button>
+                    <button class="num-btn">6</button>
+                    <button class="op-btn calc-only">×</button>
 
-                    <button onclick="appendValue('4')">4</button>
-                    <button onclick="appendValue('5')">5</button>
-                    <button onclick="appendValue('6')">6</button>
-                    <button onclick="appendValue('*')" class="calc-only">×</button>
+                    <button class="num-btn">1</button>
+                    <button class="num-btn">2</button>
+                    <button class="num-btn">3</button>
+                    <button class="op-btn calc-only">−</button>
 
-                    <button onclick="appendValue('1')">1</button>
-                    <button onclick="appendValue('2')">2</button>
-                    <button onclick="appendValue('3')">3</button>
-                    <button onclick="appendValue('-')" class="calc-only">−</button>
+                    <button class="num-btn">0</button>
+                    <button class="num-btn">.</button>
+                    <button class="op-btn calc-only">%</button>
+                    <button class="op-btn calc-only">+</button>
 
-                    <button onclick="appendValue('0')">0</button>
-                    <button onclick="appendValue('.')">.</button>
-                    <button onclick="appendValue('%')" class="calc-only">%</button>
-                    <button onclick="appendValue('+')" class="calc-only">+</button>
-
-                    <button onclick="appendValue('(')" class="calc-only">(</button>
-                    <button onclick="appendValue(')')" class="calc-only">)</button>
-                    <button onclick="deleteLast()" class="btn-delete">DEL</button>
-                    <button onclick="copyResult()" class="calc-only">ANS</button>
+                    <button class="op-btn calc-only">(</button>
+                    <button class="op-btn calc-only">)</button>
+                    <button class="btn-delete">DEL</button>
+                    <button class="btn-ans calc-only">ANS</button>
                 </div>
 
                 <div class="utility-buttons">
-                    <button onclick="clearUI()" class="btn-clear">AC</button>
-                    <button onclick="handleMainAction()" class="btn-equal">=</button>
+                    <button class="btn-clear">AC</button>
+                    <button class="btn-equal">=</button>
                 </div>
 
                 <div id="resultDisplay" class="result">Result: --</div>
@@ -86,7 +81,7 @@
             <div class="history-card">
                 <h2>History</h2>
                 <ul id="historyList"></ul>
-                <button onclick="clearHistory()" class="btn-history">Clear</button>
+                <button class="btn-history-clear">Clear</button>
             </div>
         </div>
     </div>
