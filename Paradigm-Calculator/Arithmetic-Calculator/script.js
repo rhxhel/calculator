@@ -1,19 +1,28 @@
-let memoryValue = 0;
 let activeTab = 'calc-tab';
+
+// Load history from local storage on startup
+window.onload = () => {
+    const savedHistory = JSON.parse(localStorage.getItem('calcHistory')) || [];
+    const historyList = document.getElementById('historyList');
+    savedHistory.forEach(item => {
+        const li = document.createElement('li');
+        li.innerText = item;
+        historyList.appendChild(li);
+    });
+};
 
 // --- TAB MANAGEMENT ---
 function switchTab(tabId) {
     activeTab = tabId;
     const wrapper = document.getElementById('app-wrapper');
     
-    // UI Tab Updates
     document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.getElementById(tabId).classList.add('active');
     
-    if (event && event.currentTarget) {
-        event.currentTarget.classList.add('active');
-    }
+    // Add active class to the button that triggered the event
+    const btnId = tabId === 'calc-tab' ? 'calc-tab-btn' : 'convert-tab-btn';
+    document.getElementById(btnId).classList.add('active');
 
     const display = document.getElementById('resultDisplay');
     display.innerText = 'Result: --';
@@ -65,6 +74,12 @@ function evaluateProcedural(tokens) {
     return res;
 }
 
+function convertProcedural(type, val) {
+    if (type === 'length') return (val * 3.28084).toFixed(2) + " ft";
+    if (type === 'temp') return ((val * 1.8) + 32).toFixed(2) + " °F";
+    if (type === 'weight') return (val * 2.20462).toFixed(2) + " lbs";
+}
+
 // ============================================================
 // PARADIGM 2: OBJECT-ORIENTED (OOP)
 // ============================================================
@@ -84,23 +99,84 @@ class SmartCalculator {
         }
         return res;
     }
+
+    convert(type, val) {
+        const units = {
+            length: { rate: 3.28084, label: " ft" },
+            temp: { rate: 1.8, offset: 32, label: " °F" },
+            weight: { rate: 2.20462, label: " lbs" }
+        };
+        const config = units[type];
+        let res = (val * config.rate) + (config.offset || 0);
+        return res.toFixed(2) + config.label;
+    }
 }
 
 // ============================================================
 // PARADIGM 3: FUNCTIONAL
 // ============================================================
-function evaluateFunctional(tokens) {
-    return tokens.slice(1).reduce((acc, val, idx) => {
-        if (idx % 2 === 0) return acc;
-        let op = tokens[idx], next = parseFloat(tokens[idx+1]);
-        if ((op === '/' || op === '%') && next === 0) throw new Error("DivZero");
-        if (op === '+') return acc + next;
-        if (op === '-') return acc - next;
-        if (op === '*') return acc * next;
-        if (op === '/') return acc / next;
-        if (op === '%') return acc % next;
-    }, parseFloat(tokens[0]));
-}
+const functionalOps = {
+    '+': (a, b) => a + b,
+    '-': (a, b) => a - b,
+    '*': (a, b) => a * b,
+    '/': (a, b) => b === 0 ? (() => { throw new Error("DivZero") })() : a / b,
+    '%': (a, b) => b === 0 ? (() => { throw new Error("DivZero") })() : a % b
+};
+
+const evaluateFunctional = (tokens) => 
+    tokens.reduce((acc, curr, idx) => {
+        if (idx === 0) return parseFloat(curr);
+        if (idx % 2 !== 0) return acc; 
+        return functionalOps[tokens[idx - 1]](acc, parseFloat(curr));
+    }, 0);
+
+const convertFunctional = (type, val) => {
+    const formulaMap = {
+        length: v => v * 3.28084,
+        temp: v => (v * 1.8) + 32,
+        weight: v => v * 2.20462
+    };
+    const labels = { length: " ft", temp: " °F", weight: " lbs" };
+    return formulaMap[type](val).toFixed(2) + labels[type];
+};
+
+// ============================================================
+// PARADIGM 4: EVENT-DRIVEN 
+// ============================================================
+
+document.getElementById('calc-tab-btn').addEventListener('click', () => switchTab('calc-tab'));
+document.getElementById('convert-tab-btn').addEventListener('click', () => switchTab('convert-tab'));
+
+document.querySelectorAll('#numpad button').forEach(button => {
+    button.addEventListener('click', () => {
+        const text = button.innerText;
+        if (button.classList.contains('btn-delete')) {
+            deleteLast();
+        } else if (button.classList.contains('btn-ans')) {
+            copyResult();
+        } else {
+            const value = text.replace('÷', '/').replace('×', '*').replace('−', '-');
+            appendValue(value);
+        }
+    });
+});
+
+document.querySelector('.btn-clear').addEventListener('click', clearUI);
+document.querySelector('.btn-equal').addEventListener('click', handleMainAction);
+
+document.querySelector('.btn-history-clear').addEventListener('click', clearHistory);
+
+document.getElementById('convertType').addEventListener('change', runConversion);
+
+document.addEventListener('keydown', (event) => {
+    const key = event.key;
+    const operators = ['+', '-', '*', '/', '.', '%', '(', ')'];
+    if (!isNaN(key) || operators.includes(key)) appendValue(key);
+    else if (key === 'Enter') handleMainAction();
+    else if (key === 'Backspace') deleteLast();
+    else if (key === 'Escape') clearUI();
+});
+
 
 // --- CORE ACTION HANDLER ---
 function handleMainAction() {
@@ -132,7 +208,7 @@ function handleMainAction() {
 
         display.innerText = `Result: ${result}`;
         display.classList.add('success-state');
-        addToHistory(input.value, result);
+        addToHistory(`${input.value} = ${result}`);
         input.value = '';
     } catch (e) {
         let errorMsg = "Error";
@@ -146,6 +222,7 @@ function handleMainAction() {
 function runConversion() {
     const type = document.getElementById('convertType').value;
     const val = parseFloat(document.getElementById('convertInput').value);
+    const mode = document.getElementById('paradigmChoice').value; 
     const display = document.getElementById('resultDisplay');
     
     if (isNaN(val)) { 
@@ -154,12 +231,16 @@ function runConversion() {
     }
 
     let res;
-    if (type === 'length') res = (val * 3.28084).toFixed(2) + " ft";
-    else if (type === 'temp') res = ((val * 9/5) + 32).toFixed(2) + " °F";
-    else res = (val * 2.20462).toFixed(2) + " lbs";
+    if (mode === 'procedural') res = convertProcedural(type, val);
+    else if (mode === 'oop') res = new SmartCalculator().convert(type, val);
+    else res = convertFunctional(type, val);
 
     display.innerText = `Result: ${res}`;
+    display.classList.remove('error-state');
     display.classList.add('success-state');
+    
+    const typeLabels = { length: "m to ft", temp: "°C to °F", weight: "kg to lb" };
+    addToHistory(`${val} (${typeLabels[type]}) = ${res}`);
 }
 
 // --- UI HELPERS ---
@@ -192,26 +273,21 @@ function deleteLast() {
     el.value = el.value.slice(0, -1);
 }
 
-// --- MEMORY ---
-function memoryClear() { memoryValue = 0; }
-function memoryRecall() { appendValue(memoryValue); }
-function memoryAdd() {
-    const res = parseFloat(document.getElementById('resultDisplay').innerText.replace('Result: ', ''));
-    if (!isNaN(res)) memoryValue += res;
-}
-function memorySubtract() {
-    const res = parseFloat(document.getElementById('resultDisplay').innerText.replace('Result: ', ''));
-    if (!isNaN(res)) memoryValue -= res;
-}
-
-// --- HISTORY & UTILS ---
-function addToHistory(e, r) {
+// --- HISTORY & STORAGE ---
+function addToHistory(entry) {
     const li = document.createElement('li');
-    li.innerText = `${e} = ${r}`;
+    li.innerText = entry;
     document.getElementById('historyList').prepend(li);
+    
+    const savedHistory = JSON.parse(localStorage.getItem('calcHistory')) || [];
+    savedHistory.unshift(entry);
+    localStorage.setItem('calcHistory', JSON.stringify(savedHistory.slice(0, 50))); 
 }
 
-function clearHistory() { document.getElementById('historyList').innerHTML = ''; }
+function clearHistory() { 
+    document.getElementById('historyList').innerHTML = ''; 
+    localStorage.removeItem('calcHistory');
+}
 
 function copyResult() {
     const res = document.getElementById('resultDisplay').innerText.replace('Result: ', '');
